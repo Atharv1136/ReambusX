@@ -65,7 +65,7 @@ export default function ReceiptScanner({ onResult }: ReceiptScannerProps) {
 
       if (res.ok && data?.ok) {
         setProgress(100);
-        onResult(data.data.parsed);
+        onResult(data.data?.parsed as OcrResult);
       } else {
         if (res.status === 401) {
           setError('Session expired. Please log in again.');
