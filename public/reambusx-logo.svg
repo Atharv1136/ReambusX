@@ -1,0 +1,45 @@
+<svg width="1200" height="320" viewBox="0 0 1200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D1117"/>
+      <stop offset="1" stop-color="#121A29"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="180" y1="72" x2="298" y2="206" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="180" y1="116" x2="292" y2="240" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBBF24"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <filter id="glow" x="95" y="40" width="260" height="240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="320" rx="28" fill="url(#bg)"/>
+
+  <g filter="url(#glow)">
+    <path d="M108 82H196L250 136H162L108 82Z" fill="url(#blue)"/>
+    <path d="M250 136H162L108 190H196L250 136Z" fill="#1D4ED8"/>
+    <path d="M292 82H204L258 136H346L292 82Z" fill="url(#orange)"/>
+    <path d="M108 240H196L250 186H162L108 240Z" fill="url(#orange)"/>
+    <path d="M250 186H162L108 132H196L250 186Z" fill="#FB923C" fill-opacity="0.55"/>
+    <path d="M292 240H204L258 186H346L292 240Z" fill="url(#blue)"/>
+  </g>
+
+  <text x="395" y="196" fill="#FFFFFF" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="110" font-weight="700" letter-spacing="-2">
+    Reambus
+  </text>
+  <text x="848" y="196" fill="#F59E0B" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="110" font-weight="700" letter-spacing="-2">
+    X
+  </text>
+
+  <text x="398" y="238" fill="#94A3B8" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="26" font-weight="500" letter-spacing="0.5">
+    Expense Reimbursements • Automated • Transparent • Instant
+  </text>
+</svg>
