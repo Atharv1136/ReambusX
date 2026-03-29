@@ -189,4 +189,4 @@ Ensure environment variables are loaded before running scripts; otherwise `pg` m
 
 ## License
 
-Internal project for ReambusX by AntiGravity.
+Internal project for ReambusX.
