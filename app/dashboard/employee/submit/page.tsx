@@ -1,14 +1,15 @@
 import { requireRole } from '@/lib/auth-guards';
+import { pool } from '@/lib/db';
+import SubmitExpenseForm from '@/components/employee/SubmitExpenseForm';
 
 export default async function SubmitExpensePage() {
-  await requireRole(['employee', 'manager', 'admin']);
+  const session = await requireRole(['employee', 'manager', 'admin']);
 
-  return (
-    <section className="rounded-xl border border-border bg-bg-card p-6">
-      <h1 className="font-heading text-2xl text-text-primary">Submit Expense</h1>
-      <p className="mt-2 text-sm text-text-secondary">
-        Receipt upload, OCR autofill, currency conversion, and submission workflow are currently being wired.
-      </p>
-    </section>
+  const { rows } = await pool.query<{ currency_code: string }>(
+    `SELECT currency_code FROM companies WHERE id = $1`,
+    [session.companyId],
   );
+  const companyCurrency = rows[0]?.currency_code ?? 'USD';
+
+  return <SubmitExpenseForm companyCurrency={companyCurrency} />;
 }

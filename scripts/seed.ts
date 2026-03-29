@@ -92,7 +92,14 @@ async function main() {
     );
   `);
 
-  console.log('Tables created. Checking for existing company...');
+  // Add indexes for performance
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_expenses_company_status ON expenses(company_id, status)`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_expenses_submitted_by ON expenses(submitted_by)`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_expense_approvals_approver ON expense_approvals(approver_id, status)`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_users_company_role ON users(company_id, role)`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_users_manager ON users(manager_id)`);
+
+  console.log('Tables and indexes created. Checking for existing company...');
 
   // Seed Data: Acme Corp
   const companyRes = await pool.query('SELECT * FROM companies WHERE name = $1', ['Acme Corp']);

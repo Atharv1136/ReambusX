@@ -49,7 +49,7 @@ export default function LoginForm() {
     <div className="grid min-h-screen lg:grid-cols-2">
       <aside className="hidden border-r border-border bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.26),transparent_38%),radial-gradient(circle_at_78%_70%,rgba(245,158,11,0.22),transparent_35%),linear-gradient(155deg,#0D1117,#161F31)] p-12 lg:block">
         <p className="inline-flex rounded-full border border-accent-orange/40 bg-accent-orange/10 px-4 py-1 text-xs uppercase tracking-[0.18em] text-accent-amber">
-          AntiGravity Stack
+          ReambusX
         </p>
         <h1 className="mt-8 max-w-md font-heading text-4xl leading-tight text-white">
           Approvals, policy control, and reimbursement clarity in one place.

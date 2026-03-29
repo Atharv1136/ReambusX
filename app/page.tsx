@@ -76,7 +76,7 @@ export default function Home() {
         <section className="mx-auto max-w-7xl px-4 pb-20 pt-24 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="mb-5 inline-flex rounded-full border border-accent-blue/40 bg-accent-blue/10 px-4 py-1 text-xs uppercase tracking-[0.18em] text-accent-cyan">
-              Built by AntiGravity
+              Expense Management Reimagined
             </p>
             <h1 className="font-heading text-4xl leading-tight sm:text-5xl lg:text-6xl">
               Expense Reimbursements. Automated. Transparent. Instant.
@@ -135,7 +135,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm sm:px-6 lg:px-8">
           <Logo />
           <p className="text-text-secondary">Expense workflows made faster for modern teams.</p>
-          <p className="text-text-secondary">Built by AntiGravity</p>
+          <p className="text-text-secondary">&copy; {new Date().getFullYear()} ReambusX. All rights reserved.</p>
         </div>
       </footer>
     </div>

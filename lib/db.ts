@@ -13,6 +13,6 @@ export const pool = globalForPg.pool || new Pool({
 
 if (process.env.NODE_ENV !== 'production') globalForPg.pool = pool;
 
-export async function query<T extends QueryResultRow>(text: string, params?: readonly unknown[]) {
+export async function query<T extends QueryResultRow>(text: string, params?: unknown[]) {
   return pool.query<T>(text, params);
 }
