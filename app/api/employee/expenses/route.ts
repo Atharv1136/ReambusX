@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { handleRouteError, success } from '@/lib/http';
+import { AppError, handleRouteError, success } from '@/lib/http';
 import { requireRole } from '@/lib/auth-guards';
 import { listExpensesForEmployee, createExpense } from '@/lib/repositories/expense-repository';
 import { findMatchingRule } from '@/lib/repositories/approval-rule-repository';
@@ -27,6 +27,9 @@ export async function POST(request: NextRequest) {
       `SELECT currency_code FROM companies WHERE id = $1`,
       [session.companyId],
     );
+    if (!companyRows[0]) {
+      throw new AppError(404, 'COMPANY_NOT_FOUND', 'Unable to find company settings for this account.');
+    }
     const companyCurrency = companyRows[0]?.currency_code;
 
     // Currency conversion

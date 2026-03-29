@@ -33,7 +33,9 @@ export default function SubmitExpenseForm({ companyCurrency }: SubmitExpenseForm
     const timeout = setTimeout(async () => {
       setLoadingRate(true);
       try {
-        const res = await fetch(`/api/exchange-rate/${form.currencyCode}`);
+        const res = await fetch(`/api/exchange-rate/${form.currencyCode}`, {
+          credentials: 'include',
+        });
         const data = await res.json();
         const rates = data?.ok ? data.data?.rates : data?.rates;
         const rate = rates?.[companyCurrency];
@@ -50,13 +52,20 @@ export default function SubmitExpenseForm({ companyCurrency }: SubmitExpenseForm
     return () => clearTimeout(timeout);
   }, [form.amount, form.currencyCode, companyCurrency]);
 
-  function handleOcrResult(result: { amount: number | null; date: string | null; category: string; description: string | null }) {
+  function handleOcrResult(result: {
+    amount: number | null;
+    date: string | null;
+    category: string;
+    description: string | null;
+    currencyCode: string | null;
+  }) {
     setForm((prev) => ({
       ...prev,
       amount: result.amount?.toString() ?? prev.amount,
       category: CATEGORIES.includes(result.category as typeof CATEGORIES[number]) ? result.category : prev.category,
       description: result.description ?? prev.description,
       expenseDate: result.date ? normalizeDate(result.date) : prev.expenseDate,
+      currencyCode: result.currencyCode && /^[A-Z]{3}$/.test(result.currencyCode) ? result.currencyCode : prev.currencyCode,
     }));
   }
 
@@ -77,6 +86,7 @@ export default function SubmitExpenseForm({ companyCurrency }: SubmitExpenseForm
       const res = await fetch('/api/employee/expenses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           category: form.category,
           description: form.description || null,
@@ -86,9 +96,28 @@ export default function SubmitExpenseForm({ companyCurrency }: SubmitExpenseForm
         }),
       });
 
-      const data = await res.json();
-      if (!data.ok) {
-        setError(data.error?.message ?? 'Failed to submit expense.');
+      let data: { ok?: boolean; error?: { message?: string } } | null = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+
+      if (!res.ok || !data?.ok) {
+        if (res.status === 401) {
+          setError('Your session has expired. Please log in again.');
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 800);
+          return;
+        }
+
+        if (res.status === 503) {
+          setError(data?.error?.message ?? 'Service is temporarily unavailable. Please retry in a few seconds.');
+          return;
+        }
+
+        setError(data?.error?.message ?? `Failed to submit expense (HTTP ${res.status}).`);
         return;
       }
 
@@ -96,7 +125,7 @@ export default function SubmitExpenseForm({ companyCurrency }: SubmitExpenseForm
       setForm({ category: 'Miscellaneous', description: '', amount: '', currencyCode: companyCurrency || 'USD', expenseDate: new Date().toISOString().split('T')[0] });
       setTimeout(() => setSuccess(false), 5000);
     } catch {
-      setError('Unexpected error.');
+      setError('Network error while submitting expense. Please check your connection and retry.');
     } finally {
       setSubmitting(false);
     }

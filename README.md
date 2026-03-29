@@ -89,11 +89,15 @@ Global theme tokens are defined in [app/globals.css](app/globals.css).
 Create `.env.local`:
 
 ```bash
-DATABASE_URL="postgresql://<user>:<password>@<host>/<db>?sslmode=require"
+DATABASE_URL="postgresql://<user>:<password>@<host>/<db>?sslmode=verify-full"
 JWT_SECRET="replace-with-strong-secret"
 JWT_EXPIRES_IN="1d"
 UPLOAD_DIR="uploads"
+OPENAI_API_KEY=""
+OPENAI_MODEL="gpt-4o-mini"
 ```
+
+If `OPENAI_API_KEY` is set, OCR uses OpenAI to generate a higher-quality structured description, category, date, amount, and currency from extracted receipt text. If not set, the app automatically falls back to regex-based parsing.
 
 Reference template: [.env.example](.env.example)
 

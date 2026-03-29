@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import { useState, useRef } from 'react';
 
 type OcrResult = {
   amount: number | null;
@@ -8,6 +9,7 @@ type OcrResult = {
   vendorName: string | null;
   category: string;
   description: string | null;
+  currencyCode: string | null;
 };
 
 type ReceiptScannerProps = {
@@ -47,18 +49,31 @@ export default function ReceiptScanner({ onResult }: ReceiptScannerProps) {
       const res = await fetch('/api/ocr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ imageBase64 }),
       });
 
       clearInterval(progressInterval);
       setProgress(95);
 
-      const data = await res.json();
-      if (data.ok) {
+      let data: { ok?: boolean; error?: { message?: string }; data?: { parsed?: OcrResult } } | null = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+
+      if (res.ok && data?.ok) {
         setProgress(100);
         onResult(data.data.parsed);
       } else {
-        setError(data.error?.message ?? 'OCR processing failed.');
+        if (res.status === 401) {
+          setError('Session expired. Please log in again.');
+        } else if (res.status === 503) {
+          setError(data?.error?.message ?? 'OCR service is temporarily unavailable. Please retry.');
+        } else {
+          setError(data?.error?.message ?? `OCR processing failed (HTTP ${res.status}).`);
+        }
       }
     } catch {
       setError('Failed to process receipt.');
@@ -101,7 +116,15 @@ export default function ReceiptScanner({ onResult }: ReceiptScannerProps) {
 
         {imagePreview ? (
           <div className="space-y-3">
-            <img src={imagePreview} alt="Receipt preview" className="mx-auto max-h-40 rounded-lg object-contain" />
+            <div className="relative mx-auto h-40 w-full max-w-xs overflow-hidden rounded-lg">
+              <Image
+                src={imagePreview}
+                alt="Receipt preview"
+                fill
+                unoptimized
+                className="object-contain"
+              />
+            </div>
             {processing && (
               <div className="space-y-1">
                 <div className="h-1.5 w-full rounded-full bg-bg-secondary overflow-hidden">
